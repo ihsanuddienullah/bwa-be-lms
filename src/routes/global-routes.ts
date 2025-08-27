@@ -3,11 +3,11 @@ import { helloWorld } from '../controllers/global-controller'
 import { validateRequest } from '../middlewares/validate-request'
 import { exampleSchema } from '../utils/schema'
 
-const globalRouter = express.Router()
+const globalRoutes = express.Router()
 
-globalRouter.get('/hello-world', helloWorld)
-globalRouter.post('/test-validation', validateRequest(exampleSchema), async (_, res) => {
+globalRoutes.get('/hello-world', helloWorld)
+globalRoutes.post('/test-validation', validateRequest(exampleSchema), async (_, res) => {
   return res.json({ message: 'Validation passed' })
 })
 
-export default globalRouter
+export default globalRoutes
