@@ -22,7 +22,7 @@ export const signUpAction = async (req: Request, res: Response) => {
 
     const transaction = new transactionModel({
       user: user._id,
-      price: 100000,
+      price: body.price,
       status: 'pending',
     })
 
