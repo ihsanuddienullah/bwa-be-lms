@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
+import jwt from 'jsonwebtoken'
 import transactionModel from '../models/transaction-model'
 import userModel from '../models/user-model'
 
@@ -14,7 +15,7 @@ export const signUpAction = async (req: Request, res: Response) => {
 
     const user = new userModel({
       name: body.name,
-      email: body.email,
+      email: body.email.toLowerCase(),
       password: hashPassword,
       photo: 'default.jpg',
       role: 'manager',
@@ -59,6 +60,63 @@ export const signUpAction = async (req: Request, res: Response) => {
       message: 'Sign up success',
       data: {
         midtrans_payment_url: midtransResponse.redirect_url,
+      },
+    })
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
+
+export const signInAction = async (req: Request, res: Response) => {
+  try {
+    const body = req.body
+
+    const existingUser = await userModel.findOne().where('email').equals(body.email.toLowerCase())
+
+    if (!existingUser) {
+      return res.status(400).json({
+        message: 'User not found',
+      })
+    }
+
+    const isPasswordValid = bcrypt.compareSync(body.password, existingUser.password)
+
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        message: 'Email or password is incorrect',
+      })
+    }
+
+    const isTransactionValid = await transactionModel
+      .findOne()
+      .where('user')
+      .equals(existingUser._id)
+      .where('status')
+      .equals('success')
+
+    if (existingUser.role === 'manager' && !isTransactionValid) {
+      return res.status(400).json({
+        message: 'Please complete the payment to access the dashboard',
+      })
+    }
+
+    const jwtPayload = {
+      id: existingUser._id,
+    }
+
+    const token = jwt.sign(jwtPayload, process.env.JWT_SECRET_KEY as string, { expiresIn: '1d' })
+
+    return res.json({
+      message: 'Sign in success',
+      data: {
+        name: existingUser.name,
+        email: existingUser.email,
+        role: existingUser.role,
+        photo: existingUser.photo,
+        token: token,
       },
     })
   } catch (error) {

@@ -9,3 +9,5 @@ export const signUpSchema = z.object({
   email: z.email('Invalid email address'),
   password: z.string().min(5, 'Password must be at least 5 characters long'),
 })
+
+export const signInSchema = signUpSchema.omit({ name: true })
