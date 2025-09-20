@@ -1,8 +1,9 @@
 import express from 'express'
-import { handlePayment } from '../controllers/payment-controller'
+import { getPaymentStatus, handlePayment } from '../controllers/payment-controller'
 
 const authRouter = express.Router()
 
 authRouter.post('/handle-payment', handlePayment)
+authRouter.get('/payment-status/:transaction_id', getPaymentStatus)
 
 export default authRouter

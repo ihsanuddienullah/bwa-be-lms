@@ -37,3 +37,32 @@ export const handlePayment = async (req: Request, res: Response) => {
     })
   }
 }
+
+export const getPaymentStatus = async (req: Request, res: Response) => {
+  try {
+    const transactionId = req.params.transaction_id
+
+    const transaction = await Transaction.findById(transactionId)
+
+    if (!transaction) {
+      return res.status(404).json({
+        message: 'Transaction not found',
+      })
+    }
+
+    return res.json({
+      message: 'Transaction status retrieved',
+      data: {
+        transaction_id: transaction._id,
+        price: transaction.price,
+        status: transaction.status,
+      },
+    })
+  } catch (error) {
+    console.error(error)
+
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    })
+  }
+}
