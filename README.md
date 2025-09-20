@@ -18,4 +18,6 @@ pnpm dev
 ngrok http 3000
 ```
 
-This guarantees that all required dependencies are available for the backend to function correctly.
+Then change the handle payment api in midtrans dashboard
+
+### This guarantees that all required dependencies are available for the backend to function correctly.
