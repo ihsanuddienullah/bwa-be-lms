@@ -38,7 +38,7 @@ export const signUpAction = async (req: Request, res: Response) => {
           email: user.email,
         },
         callbacks: {
-          finish: `${process.env.FRONTEND_URL}/payment-status/${transaction._id}`,
+          finish: `${process.env.FRONTEND_URL}/payment-status`,
         },
       }),
       headers: {
