@@ -3,6 +3,7 @@ import cors from 'cors'
 import { config } from 'dotenv'
 import express from 'express'
 import authRoutes from './routes/auth-routes'
+import courseRoutes from './routes/course-routes'
 import globalRoutes from './routes/global-routes'
 import paymentRoutes from './routes/payment-routes'
 import connectToDatabase from './utils/database'
@@ -25,6 +26,7 @@ app.get('/', (_, res) => {
 app.use('/api', globalRoutes)
 app.use('/api', authRoutes)
 app.use('/api', paymentRoutes)
+app.use('/api', courseRoutes)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

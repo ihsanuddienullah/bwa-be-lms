@@ -105,7 +105,7 @@ export const signInAction = async (req: Request, res: Response) => {
     }
 
     const jwtPayload = {
-      id: existingUser._id,
+      user_id: existingUser._id,
     }
 
     const token = jwt.sign(jwtPayload, process.env.JWT_SECRET_KEY as string, { expiresIn: '1d' })
