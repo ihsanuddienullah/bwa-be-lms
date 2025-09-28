@@ -111,3 +111,56 @@ export const createCourse = async (req: Request & { user?: IRequestUser }, res: 
     })
   }
 }
+
+export const updateCourse = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const body = req.body
+    const courseId = req.params.course_id
+
+    const parse = createCourseSchema.safeParse(body)
+
+    if (!parse.success) {
+      const errorMessages = parse.error.issues.map((issue) => issue.message)
+
+      if (req?.file?.path && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path)
+      }
+
+      return res.status(500).json({ error: 'invalid request', messages: errorMessages })
+    }
+
+    const category = await categoryModel.findById(parse.data.category_id)
+    const oldCourse = await courseModel.findById(courseId)
+
+    if (!category) {
+      return res.status(500).json({
+        message: 'Category not found',
+      })
+    }
+
+    if (!oldCourse) {
+      return res.status(500).json({
+        message: 'Course not found',
+      })
+    }
+
+    await courseModel.findByIdAndUpdate(courseId, {
+      title: parse.data.title,
+      thumbnail: req.file?.filename || oldCourse.thumbnail,
+      category: category._id,
+      tagline: parse.data.tagline,
+      description: parse.data.description,
+      manager: req.user?.id,
+    })
+
+    return res.json({
+      message: 'Update course success',
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
