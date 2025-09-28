@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import fs from 'fs'
+import path from 'path'
 import categoryModel from '../models/category-model'
 import courseModel from '../models/course-model'
 import userModel from '../models/user-model'
@@ -36,7 +37,7 @@ export const getCourses = async (req: Request & { user?: IRequestUser }, res: Re
     })
 
     return res.json({
-      message: 'Get courses success',
+      message: `Get ${req.user?.name}'s courses success`,
       data: formattedCourses,
     })
   } catch (error) {
@@ -155,6 +156,39 @@ export const updateCourse = async (req: Request & { user?: IRequestUser }, res: 
 
     return res.json({
       message: 'Update course success',
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
+
+export const deleteCourse = async (req: Request, res: Response) => {
+  try {
+    const courseId = req.params.course_id
+
+    const course = await courseModel.findById(courseId)
+
+    if (!course) {
+      return res.status(500).json({
+        message: 'Course not found',
+      })
+    }
+
+    const dirname = path.resolve()
+    const filePath = path.join(dirname, '/public/uploads/courses', course.thumbnail)
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath)
+    }
+
+    await courseModel.findByIdAndDelete(courseId)
+
+    return res.json({
+      message: 'Delete course success',
     })
   } catch (error) {
     console.log(error)
