@@ -24,6 +24,12 @@ const userModel = new mongoose.Schema(
       enum: ['manager', 'student'],
       default: 'manager',
     },
+    courses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course',
+      },
+    ],
   },
   {
     timestamps: true,
