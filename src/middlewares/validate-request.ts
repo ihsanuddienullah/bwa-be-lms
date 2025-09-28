@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express'
 import { ZodError } from 'zod'
 
 export const validateRequest = (schema: any) => async (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.body)
   try {
     schema.parse(req.body)
     next()
