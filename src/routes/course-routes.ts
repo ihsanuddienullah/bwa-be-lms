@@ -11,9 +11,9 @@ const upload = multer({
   fileFilter,
 })
 
-courseRoutes.get('/get-courses', verifyToken, getCourses)
-courseRoutes.post('/create-course', verifyToken, upload.single('thumbnail'), createCourse)
-courseRoutes.put('/update-course/:course_id', verifyToken, upload.single('thumbnail'), updateCourse)
-courseRoutes.delete('/delete-course/:course_id', verifyToken, deleteCourse)
+courseRoutes.get('/courses', verifyToken, getCourses)
+courseRoutes.post('/courses', verifyToken, upload.single('thumbnail'), createCourse)
+courseRoutes.put('/courses/:course_id', verifyToken, upload.single('thumbnail'), updateCourse)
+courseRoutes.delete('/courses/:course_id', verifyToken, deleteCourse)
 
 export default courseRoutes
