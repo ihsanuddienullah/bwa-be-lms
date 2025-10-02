@@ -12,29 +12,44 @@ const verifyToken = async (req: Request & { user?: IRequestUser }, res: Response
 
   const bearerHeader = req.headers['authorization']
 
-  if (typeof bearerHeader !== 'undefined' && bearerHeader.startsWith('JWT')) {
-    const bearerToken = bearerHeader.split(' ')[1]
-    const decoded = jwt.verify(bearerToken, secretKey) as JwtPayload
+  try {
+    if (typeof bearerHeader !== 'undefined' && bearerHeader.startsWith('JWT')) {
+      const bearerToken = bearerHeader.split(' ')[1]
 
-    const user = await userModel.findById(decoded.user_id, '_id name email role')
+      const decoded = jwt.verify(bearerToken, secretKey) as JwtPayload
 
-    if (!user) {
+      const user = await userModel.findById(decoded.user_id, '_id name email role')
+
+      if (!user) {
+        return res.status(400).json({
+          message: 'Token expired or invalid',
+        })
+      }
+
+      req.user = {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      }
+
+      next()
+    } else {
+      res.status(401).json({
+        message: 'Unauthorized',
+      })
+    }
+  } catch (error) {
+    console.log(error)
+
+    if (error instanceof jwt.TokenExpiredError) {
       return res.status(400).json({
         message: 'Token expired or invalid',
       })
     }
 
-    req.user = {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    }
-
-    next()
-  } else {
-    res.sendStatus(401).json({
-      message: 'Unauthorized',
+    return res.status(500).json({
+      message: 'Internal server error',
     })
   }
 }

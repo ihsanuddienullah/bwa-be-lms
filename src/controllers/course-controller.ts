@@ -82,7 +82,7 @@ export const createCourse = async (req: Request & { user?: IRequestUser }, res: 
       return res.status(500).json({ error: 'invalid request', messages: errorMessages })
     }
 
-    const category = await categoryModel.findById(parse.data.category_id)
+    const category = await categoryModel.findById(parse.data.categoryId)
 
     if (!category) {
       return res.status(500).json({
@@ -147,7 +147,7 @@ export const updateCourse = async (req: Request & { user?: IRequestUser }, res: 
       return res.status(500).json({ error: 'invalid request', messages: errorMessages })
     }
 
-    const category = await categoryModel.findById(parse.data.category_id)
+    const category = await categoryModel.findById(parse.data.categoryId)
     const oldCourse = await courseModel.findById(courseId)
 
     if (!category) {

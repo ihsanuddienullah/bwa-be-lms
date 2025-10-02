@@ -14,7 +14,7 @@ export const signInSchema = signUpSchema.omit({ name: true })
 
 export const createCourseSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  category_id: z.string().min(1, 'Category is required'),
+  categoryId: z.string().min(1, 'Category is required'),
   description: z.string().min(1, 'Description is required'),
   tagline: z.string().min(1, 'Tagline is required'),
 })
