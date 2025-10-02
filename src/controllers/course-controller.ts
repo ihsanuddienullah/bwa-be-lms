@@ -49,6 +49,23 @@ export const getCourses = async (req: Request & { user?: IRequestUser }, res: Re
   }
 }
 
+export const getCategories = async (_: Request, res: Response) => {
+  try {
+    const categories = await categoryModel.find()
+
+    return res.json({
+      message: 'Get categories success',
+      data: categories,
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
+
 export const createCourse = async (req: Request & { user?: IRequestUser }, res: Response) => {
   try {
     const body = req.body
