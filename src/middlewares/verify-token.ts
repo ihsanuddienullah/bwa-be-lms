@@ -43,7 +43,7 @@ const verifyToken = async (req: Request & { user?: IRequestUser }, res: Response
     console.log(error)
 
     if (error instanceof jwt.TokenExpiredError) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: 'Token expired or invalid',
       })
     }

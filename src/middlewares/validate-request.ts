@@ -9,7 +9,7 @@ export const validateRequest = (schema: any) => async (req: Request, res: Respon
     if (error instanceof ZodError) {
       const errorMessages = error.issues.map((issue) => issue.message)
 
-      return res.status(500).json({ error: 'invalid request', messages: errorMessages })
+      return res.status(400).json({ error: 'invalid request', messages: errorMessages })
     }
 
     res.status(500).json({ error: 'Internal server error' })

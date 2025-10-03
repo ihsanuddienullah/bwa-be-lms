@@ -78,7 +78,7 @@ export const signInAction = async (req: Request, res: Response) => {
     const existingUser = await userModel.findOne().where('email').equals(body.email.toLowerCase())
 
     if (!existingUser) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: 'User not found',
       })
     }
@@ -86,20 +86,15 @@ export const signInAction = async (req: Request, res: Response) => {
     const isPasswordValid = bcrypt.compareSync(body.password, existingUser.password)
 
     if (!isPasswordValid) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: 'Email or password is incorrect',
       })
     }
 
-    const isTransactionValid = await transactionModel
-      .findOne()
-      .where('user')
-      .equals(existingUser._id)
-      .where('status')
-      .equals('success')
+    const isTransactionValid = await transactionModel.findOne().where('user').equals(existingUser._id).where('status').equals('success')
 
     if (existingUser.role === 'manager' && !isTransactionValid) {
-      return res.status(400).json({
+      return res.status(403).json({
         message: 'Please complete the payment to access the dashboard',
       })
     }
