@@ -49,6 +49,35 @@ export const getCourses = async (req: Request & { user?: IRequestUser }, res: Re
   }
 }
 
+export const getCourseById = async (req: Request, res: Response) => {
+  try {
+    const courseId = req.params.course_id
+
+    const course = await courseModel.findById(courseId)
+
+    if (!course) {
+      return res.status(404).json({
+        message: 'Course not found',
+      })
+    }
+
+    const thumbnailUrl = process.env.BACKEND_URL + '/uploads/courses/'
+
+    course.thumbnail = `${thumbnailUrl}${course.thumbnail}`
+
+    return res.json({
+      message: 'Get course success',
+      data: course,
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
+
 export const getCategories = async (_: Request, res: Response) => {
   try {
     const categories = await categoryModel.find()
