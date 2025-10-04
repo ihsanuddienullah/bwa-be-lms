@@ -53,7 +53,8 @@ export const getCourseById = async (req: Request, res: Response) => {
   try {
     const courseId = req.params.course_id
 
-    const course = await courseModel.findById(courseId)
+    const course = await courseModel.findById(courseId).select('-__v').populate('details').lean()
+    const category = await categoryModel.findById(course?.category).select('_id name').lean()
 
     if (!course) {
       return res.status(404).json({
@@ -63,11 +64,16 @@ export const getCourseById = async (req: Request, res: Response) => {
 
     const thumbnailUrl = process.env.BACKEND_URL + '/uploads/courses/'
 
-    course.thumbnail = `${thumbnailUrl}${course.thumbnail}`
+    const formattedCourses = {
+      ...course,
+      category,
+      thumbnail: `${thumbnailUrl}${course.thumbnail}`,
+      total_students: course.students.length,
+    }
 
     return res.json({
       message: 'Get course success',
-      data: course,
+      data: formattedCourses,
     })
   } catch (error) {
     console.log(error)
