@@ -19,6 +19,11 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(express.static('public'))
 
+app.use((req, _, next) => {
+  console.log(`${req.method} ${req.originalUrl}`)
+  next()
+})
+
 app.get('/', (_, res) => {
   res.send('Hello World!')
 })
