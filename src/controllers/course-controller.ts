@@ -286,3 +286,31 @@ export const createCourseContent = async (req: Request & { user?: IRequestUser }
     })
   }
 }
+
+export const updateCourseContent = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const body = req.body
+    const contentId = req.params.content_id
+
+    const updatedContent = {
+      title: body.title,
+      type: body.type,
+      youtube_id: body.youtube_id,
+      text: body.text,
+      course_id: body.course_id,
+    }
+
+    await courseContentModel.findByIdAndUpdate(contentId, updatedContent)
+
+    return res.json({
+      message: 'Create content success',
+      data: updatedContent,
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
