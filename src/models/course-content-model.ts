@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
 
-const courseDetailModel = new mongoose.Schema(
+const courseContentModel = new mongoose.Schema(
   {
-    course: {
+    course_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Course',
       required: true,
@@ -16,7 +16,7 @@ const courseDetailModel = new mongoose.Schema(
       enum: ['video', 'text'],
       default: 'video',
     },
-    videoId: String,
+    youtube_id: String,
     text: String,
   },
   {
@@ -24,4 +24,4 @@ const courseDetailModel = new mongoose.Schema(
   }
 )
 
-export default mongoose.model('CourseContent', courseDetailModel)
+export default mongoose.model('CourseContent', courseContentModel)

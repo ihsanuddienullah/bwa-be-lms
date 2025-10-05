@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import fs from 'fs'
 import path from 'path'
 import categoryModel from '../models/category-model'
+import courseContentModel from '../models/course-content-model'
 import courseModel from '../models/course-model'
 import userModel from '../models/user-model'
 import { IRequestUser } from '../utils/global-types'
@@ -117,7 +118,7 @@ export const createCourse = async (req: Request & { user?: IRequestUser }, res: 
       return res.status(500).json({ error: 'invalid request', messages: errorMessages })
     }
 
-    const category = await categoryModel.findById(parse.data.categoryId)
+    const category = await categoryModel.findById(parse.data.category_id)
 
     if (!category) {
       return res.status(500).json({
@@ -182,7 +183,7 @@ export const updateCourse = async (req: Request & { user?: IRequestUser }, res: 
       return res.status(500).json({ error: 'invalid request', messages: errorMessages })
     }
 
-    const category = await categoryModel.findById(parse.data.categoryId)
+    const category = await categoryModel.findById(parse.data.category_id)
     const oldCourse = await courseModel.findById(courseId)
 
     if (!category) {
@@ -241,6 +242,41 @@ export const deleteCourse = async (req: Request, res: Response) => {
 
     return res.json({
       message: 'Delete course success',
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
+
+export const createCourseContent = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const body = req.body
+
+    const newContent = new courseContentModel({
+      title: body.title,
+      type: body.type,
+      youtube_id: body.youtube_id,
+      text: body.text,
+      course_id: body.course_id,
+    })
+
+    await newContent.save()
+
+    await courseModel.findByIdAndUpdate(
+      body.course_id,
+      {
+        $push: { contents: newContent._id },
+      },
+      { new: true }
+    )
+
+    return res.json({
+      message: 'Create content success',
+      data: newContent,
     })
   } catch (error) {
     console.log(error)
