@@ -4,6 +4,7 @@ import {
   createCourse,
   createCourseContent,
   deleteCourse,
+  deleteCourseContent,
   getCategories,
   getCourseById,
   getCourses,
@@ -31,5 +32,6 @@ courseRoutes.delete('/courses/:course_id', verifyToken, deleteCourse)
 
 courseRoutes.post('/courses/contents', verifyToken, validateRequest(createContentSchema), createCourseContent)
 courseRoutes.put('/courses/contents/:content_id', verifyToken, validateRequest(createContentSchema), updateCourseContent)
+courseRoutes.delete('/courses/contents/:content_id', verifyToken, deleteCourseContent)
 
 export default courseRoutes

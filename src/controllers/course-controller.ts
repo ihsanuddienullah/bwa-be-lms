@@ -314,3 +314,21 @@ export const updateCourseContent = async (req: Request & { user?: IRequestUser }
     })
   }
 }
+
+export const deleteCourseContent = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const contentId = req.params.content_id
+
+    await courseContentModel.findByIdAndDelete(contentId)
+
+    return res.json({
+      message: 'Delete content success',
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
