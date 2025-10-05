@@ -53,7 +53,7 @@ export const getCourseById = async (req: Request, res: Response) => {
   try {
     const courseId = req.params.course_id
 
-    const course = await courseModel.findById(courseId).select('-__v').populate('details').lean()
+    const course = await courseModel.findById(courseId).select('-__v').populate('contents').lean()
     const category = await categoryModel.findById(course?.category).select('_id name').lean()
 
     if (!course) {
