@@ -54,8 +54,14 @@ export const getCourseById = async (req: Request, res: Response) => {
   try {
     const courseId = req.params.course_id
 
-    const course = await courseModel.findById(courseId).select('-__v').populate('contents').lean()
-    const category = await categoryModel.findById(course?.category).select('_id name').lean()
+    const course = await courseModel
+      .findById(courseId)
+      .populate({
+        path: 'category',
+        select: 'name',
+      })
+      .populate('contents')
+      .lean()
 
     if (!course) {
       return res.status(404).json({
@@ -67,7 +73,6 @@ export const getCourseById = async (req: Request, res: Response) => {
 
     const formattedCourses = {
       ...course,
-      category,
       thumbnail: `${thumbnailUrl}${course.thumbnail}`,
       total_students: course.students.length,
     }
