@@ -114,13 +114,14 @@ export const createCourse = async (req: Request & { user?: IRequestUser }, res: 
     const parse = createCourseSchema.safeParse(body)
 
     if (!parse.success) {
-      const errorMessages = parse.error.issues.map((issue) => issue.message)
+      const errorMessages = parse.error.issues.map((issue) => `${issue.path}: ${issue.message}`)
 
       if (req?.file?.path && fs.existsSync(req.file.path)) {
         fs.unlinkSync(req.file.path)
       }
 
-      return res.status(500).json({ error: 'invalid request', messages: errorMessages })
+      console.log(errorMessages)
+      return res.status(500).json({ error: 'invalid request', message: errorMessages })
     }
 
     const category = await categoryModel.findById(parse.data.category_id)
@@ -179,13 +180,14 @@ export const updateCourse = async (req: Request & { user?: IRequestUser }, res: 
     const parse = createCourseSchema.safeParse(body)
 
     if (!parse.success) {
-      const errorMessages = parse.error.issues.map((issue) => issue.message)
+      const errorMessages = parse.error.issues.map((issue) => `${issue.path}: ${issue.message}`)
 
       if (req?.file?.path && fs.existsSync(req.file.path)) {
         fs.unlinkSync(req.file.path)
       }
 
-      return res.status(500).json({ error: 'invalid request', messages: errorMessages })
+      console.log(errorMessages)
+      return res.status(500).json({ error: 'invalid request', message: errorMessages })
     }
 
     const category = await categoryModel.findById(parse.data.category_id)
