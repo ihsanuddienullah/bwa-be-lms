@@ -19,7 +19,7 @@ export const createCourseSchema = z.object({
   tagline: z.string().min(1, 'Tagline is required'),
 })
 
-export const createContentSchema = z.object({
+export const createCourseContentSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   type: z.string(),
   youtube_id: z.string(),
