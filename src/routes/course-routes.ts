@@ -7,6 +7,7 @@ import {
   deleteCourseContent,
   getCategories,
   getCourseById,
+  getCourseContentById,
   getCourses,
   updateCourse,
   updateCourseContent,
@@ -30,6 +31,7 @@ courseRoutes.post('/courses', verifyToken, upload.single('thumbnail'), createCou
 courseRoutes.put('/courses/:course_id', verifyToken, upload.single('thumbnail'), updateCourse)
 courseRoutes.delete('/courses/:course_id', verifyToken, deleteCourse)
 
+courseRoutes.get('/courses/contents/:content_id', verifyToken, getCourseContentById)
 courseRoutes.post('/courses/contents', verifyToken, validateRequest(createCourseContentSchema), createCourseContent)
 courseRoutes.put('/courses/contents/:content_id', verifyToken, validateRequest(createCourseContentSchema), updateCourseContent)
 courseRoutes.delete('/courses/contents/:content_id', verifyToken, deleteCourseContent)

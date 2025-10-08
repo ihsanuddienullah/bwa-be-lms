@@ -339,3 +339,28 @@ export const deleteCourseContent = async (req: Request & { user?: IRequestUser }
     })
   }
 }
+
+export const getCourseContentById = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const contentId = req.params.content_id
+
+    const content = await courseContentModel.findById(contentId).lean()
+
+    if (!content) {
+      return res.status(404).json({
+        message: 'Content not found',
+      })
+    }
+
+    return res.json({
+      message: 'Get content success',
+      data: content,
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
