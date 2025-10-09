@@ -19,6 +19,10 @@ const courseContentModel = new mongoose.Schema(
     },
     youtube_id: String,
     text: String,
+    isCompleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

@@ -305,6 +305,7 @@ export const updateCourseContent = async (req: Request & { user?: IRequestUser }
       youtube_id: body.youtube_id,
       text: body.text,
       course_id: body.course_id,
+      isCompleted: body.isCompleted,
     }
 
     await courseContentModel.findByIdAndUpdate(contentId, updatedContent)
