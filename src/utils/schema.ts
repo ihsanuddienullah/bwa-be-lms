@@ -25,5 +25,5 @@ export const createCourseContentSchema = z.object({
   youtube_id: z.string(),
   text: z.string(),
   course_id: z.string().min(1, 'Course ID is required'),
-  isCompleted: z.boolean().default(false),
+  is_completed: z.boolean().default(false),
 })
