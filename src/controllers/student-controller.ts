@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt'
 import { Request, Response } from 'express'
 import fs from 'fs'
+import path from 'path'
+import courseModel from '../models/course-model'
 import userModel from '../models/user-model'
 import { IRequestUser } from '../utils/global-types'
 import { createStudentSchema } from '../utils/schema'
@@ -115,6 +117,50 @@ export const updateStudent = async (req: Request & { user?: IRequestUser }, res:
 
     return res.json({
       message: 'Update student success',
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
+
+export const deleteStudent = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const studentId = req.params.student_id
+
+    await courseModel.findOneAndUpdate(
+      {
+        students: studentId,
+      },
+      {
+        $pull: {
+          students: studentId,
+        },
+      }
+    )
+
+    const student = await userModel.findById(studentId)
+
+    if (!student) {
+      return res.status(404).json({
+        message: 'Student not found',
+      })
+    }
+
+    const dirname = path.resolve()
+    const filePath = path.join(dirname, '/public/uploads/students', student.photo)
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath)
+    }
+
+    await userModel.findByIdAndDelete(studentId)
+
+    return res.json({
+      message: 'Delete student success',
     })
   } catch (error) {
     console.log(error)
