@@ -78,7 +78,7 @@ export const signInAction = async (req: Request, res: Response) => {
     const existingUser = await userModel.findOne().where('email').equals(body.email.toLowerCase())
 
     if (!existingUser) {
-      return res.status(401).json({
+      return res.status(404).json({
         message: 'User not found',
       })
     }
@@ -104,6 +104,7 @@ export const signInAction = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign(jwtPayload, process.env.JWT_SECRET_KEY as string, { expiresIn: '1d' })
+    const photoUrl = process.env.BACKEND_URL + '/uploads/students/'
 
     return res.json({
       message: 'Sign in success',
@@ -111,7 +112,7 @@ export const signInAction = async (req: Request, res: Response) => {
         name: existingUser.name,
         email: existingUser.email,
         role: existingUser.role,
-        photo: existingUser.photo,
+        photo: photoUrl + existingUser.photo,
         token: token,
       },
     })
