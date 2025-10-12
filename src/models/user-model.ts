@@ -30,6 +30,10 @@ const userModel = new mongoose.Schema(
         ref: 'Course',
       },
     ],
+    manager: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,

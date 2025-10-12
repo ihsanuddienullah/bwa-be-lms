@@ -27,3 +27,9 @@ export const createCourseContentSchema = z.object({
   course_id: z.string().min(1, 'Course ID is required'),
   is_completed: z.boolean().default(false),
 })
+
+export const createStudentSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.email('Invalid email address'),
+  password: z.string().min(5, 'Password must be at least 5 characters long'),
+})
