@@ -7,11 +7,20 @@ import { createStudentSchema } from '../utils/schema'
 
 export const getStudents = async (_: Request & { user?: IRequestUser }, res: Response) => {
   try {
-    const students = await userModel.find({ role: 'student' }).select('-password')
+    const students = await userModel.find({ role: 'student' }).select('name photo courses').lean()
+
+    const thumbnailUrl = process.env.BACKEND_URL + '/uploads/students/'
+
+    const formattedStudents = students.map((student) => {
+      return {
+        ...student,
+        photo: `${thumbnailUrl}${student.photo}`,
+      }
+    })
 
     return res.json({
       message: 'Get students success',
-      data: students,
+      data: formattedStudents,
     })
   } catch (error) {
     console.log(error)
@@ -55,6 +64,57 @@ export const createStudent = async (req: Request & { user?: IRequestUser }, res:
     return res.json({
       message: 'Create student success',
       data: user,
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
+
+export const updateStudent = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const studentId = req.params.student_id
+    const body = req.body
+
+    const parse = createStudentSchema
+      .partial({
+        password: true,
+      })
+      .safeParse(body)
+
+    if (!parse.success) {
+      const errorMessages = parse.error.issues.map((issue) => `${issue.path}: ${issue.message}`)
+
+      if (req?.file?.path && fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path)
+      }
+
+      console.log(errorMessages)
+      return res.status(500).json({ error: 'invalid request', message: errorMessages })
+    }
+
+    const oldStudent = await userModel.findById(studentId)
+
+    if (!oldStudent) {
+      return res.status(404).json({
+        message: 'User not found',
+      })
+    }
+
+    const hashPassword = parse.data.password ? bcrypt.hashSync(parse.data.password, 12) : oldStudent.password
+
+    await userModel.findByIdAndUpdate(studentId, {
+      name: parse.data.name,
+      email: parse.data.email.toLowerCase(),
+      password: hashPassword,
+      photo: req.file?.filename || oldStudent.photo,
+    })
+
+    return res.json({
+      message: 'Update student success',
     })
   } catch (error) {
     console.log(error)
