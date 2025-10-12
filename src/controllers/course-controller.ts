@@ -233,7 +233,7 @@ export const deleteCourse = async (req: Request, res: Response) => {
     const course = await courseModel.findById(courseId)
 
     if (!course) {
-      return res.status(500).json({
+      return res.status(404).json({
         message: 'Course not found',
       })
     }
