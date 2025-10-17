@@ -37,7 +37,7 @@ export const getStudentById = async (req: Request & { user?: IRequestUser }, res
   try {
     const studentId = req.params.student_id
 
-    const student = await userModel.findById(studentId).select('name photo email').lean()
+    const student = await userModel.findById(studentId).select('name photo email password').lean()
 
     if (!student) {
       return res.status(404).json({
