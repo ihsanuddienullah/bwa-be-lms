@@ -33,6 +33,38 @@ export const getStudents = async (_: Request & { user?: IRequestUser }, res: Res
   }
 }
 
+export const getStudentById = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const studentId = req.params.student_id
+
+    const student = await userModel.findById(studentId).select('name photo email').lean()
+
+    if (!student) {
+      return res.status(404).json({
+        message: 'Student not found',
+      })
+    }
+
+    const thumbnailUrl = process.env.BACKEND_URL + '/uploads/students/'
+
+    const formattedStudent = {
+      ...student,
+      photo: `${thumbnailUrl}${student.photo}`,
+    }
+
+    return res.json({
+      message: 'Get student success',
+      data: formattedStudent,
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
+
 export const createStudent = async (req: Request & { user?: IRequestUser }, res: Response) => {
   try {
     const body = req.body
