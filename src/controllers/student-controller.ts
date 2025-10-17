@@ -138,12 +138,10 @@ export const updateStudent = async (req: Request & { user?: IRequestUser }, res:
       })
     }
 
-    const hashPassword = parse.data.password ? bcrypt.hashSync(parse.data.password, 12) : oldStudent.password
-
     await userModel.findByIdAndUpdate(studentId, {
       name: parse.data.name,
       email: parse.data.email.toLowerCase(),
-      password: hashPassword,
+      password: oldStudent.password,
       photo: req.file?.filename || oldStudent.photo,
     })
 
