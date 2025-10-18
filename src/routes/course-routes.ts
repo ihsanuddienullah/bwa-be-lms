@@ -9,6 +9,7 @@ import {
   getCourseById,
   getCourseContentById,
   getCourses,
+  getCourseStudents,
   updateCourse,
   updateCourseContent,
 } from '../controllers/course-controller'
@@ -35,5 +36,7 @@ courseRoutes.get('/courses/contents/:content_id', verifyToken, getCourseContentB
 courseRoutes.post('/courses/contents', verifyToken, validateRequest(createCourseContentSchema), createCourseContent)
 courseRoutes.put('/courses/contents/:content_id', verifyToken, validateRequest(createCourseContentSchema), updateCourseContent)
 courseRoutes.delete('/courses/contents/:content_id', verifyToken, deleteCourseContent)
+
+courseRoutes.get('/courses/students/:course_id', verifyToken, getCourseStudents)
 
 export default courseRoutes

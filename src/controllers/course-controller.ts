@@ -365,3 +365,35 @@ export const getCourseContentById = async (req: Request & { user?: IRequestUser 
     })
   }
 }
+
+export const getCourseStudents = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const courseId = req.params.course_id
+
+    const course = await courseModel
+      .findById(courseId)
+      .select('title')
+      .populate({
+        path: 'students',
+        select: 'name photo',
+      })
+      .lean()
+
+    if (!course) {
+      return res.status(404).json({
+        message: 'Course not found',
+      })
+    }
+
+    return res.json({
+      message: 'Get students in course success',
+      data: course,
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
