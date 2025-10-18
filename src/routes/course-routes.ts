@@ -1,6 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 import {
+  addCourseStudent,
   createCourse,
   createCourseContent,
   deleteCourse,
@@ -16,7 +17,7 @@ import {
 import { validateRequest } from '../middlewares/validate-request'
 import verifyToken from '../middlewares/verify-token'
 import { fileFilter, fileStorage } from '../utils/multer'
-import { createCourseContentSchema } from '../utils/schema'
+import { addCourseStudentSchema, createCourseContentSchema } from '../utils/schema'
 
 const courseRoutes = express.Router()
 
@@ -38,5 +39,6 @@ courseRoutes.put('/courses/contents/:content_id', verifyToken, validateRequest(c
 courseRoutes.delete('/courses/contents/:content_id', verifyToken, deleteCourseContent)
 
 courseRoutes.get('/courses/students/:course_id', verifyToken, getCourseStudents)
+courseRoutes.post('/courses/students/:course_id', verifyToken, validateRequest(addCourseStudentSchema), addCourseStudent)
 
 export default courseRoutes

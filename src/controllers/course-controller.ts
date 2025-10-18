@@ -397,3 +397,36 @@ export const getCourseStudents = async (req: Request & { user?: IRequestUser }, 
     })
   }
 }
+
+export const addCourseStudent = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const body = req.body
+    const courseId = req.params.course_id
+
+    await courseModel.findByIdAndUpdate(
+      courseId,
+      {
+        $push: { students: body.student_id },
+      },
+      { new: true }
+    )
+
+    await userModel.findByIdAndUpdate(
+      body.student_id,
+      {
+        $push: { courses: courseId },
+      },
+      { new: true }
+    )
+
+    return res.json({
+      message: 'Add student to course success',
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
