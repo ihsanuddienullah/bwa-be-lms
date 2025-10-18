@@ -430,3 +430,36 @@ export const addCourseStudent = async (req: Request & { user?: IRequestUser }, r
     })
   }
 }
+
+export const deleteCourseStudent = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const body = req.body
+    const courseId = req.params.course_id
+
+    await courseModel.findByIdAndUpdate(
+      courseId,
+      {
+        $pull: { students: body.student_id },
+      },
+      { new: true }
+    )
+
+    await userModel.findByIdAndUpdate(
+      body.student_id,
+      {
+        $pull: { courses: courseId },
+      },
+      { new: true }
+    )
+
+    return res.json({
+      message: 'Delete student from course success',
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
