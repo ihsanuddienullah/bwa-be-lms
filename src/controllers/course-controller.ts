@@ -14,14 +14,10 @@ export const getCourses = async (req: Request & { user?: IRequestUser }, res: Re
       .find({
         manager: req.user?.id,
       })
-      .select('title thumbnail')
+      .select('title thumbnail students')
       .populate({
         path: 'category',
         select: 'name -_id',
-      })
-      .populate({
-        path: 'students',
-        select: 'name',
       })
       .lean()
 
