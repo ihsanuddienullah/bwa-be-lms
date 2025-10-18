@@ -50,7 +50,7 @@ export const getCourses = async (req: Request & { user?: IRequestUser }, res: Re
   }
 }
 
-export const getCourseById = async (req: Request, res: Response) => {
+export const getCourseById = async (req: Request & { user?: IRequestUser }, res: Response) => {
   try {
     const courseId = req.params.course_id
 
@@ -61,6 +61,10 @@ export const getCourseById = async (req: Request, res: Response) => {
         select: 'name',
       })
       .populate('contents')
+      .populate({
+        path: 'students',
+        select: 'name photo',
+      })
       .lean()
 
     if (!course) {
@@ -70,11 +74,19 @@ export const getCourseById = async (req: Request, res: Response) => {
     }
 
     const thumbnailUrl = process.env.BACKEND_URL + '/uploads/courses/'
+    const photoUrl = process.env.BACKEND_URL + '/uploads/students/'
+
+    const students = (course.students as any[]).map((student) => {
+      return {
+        ...student,
+        photo: `${photoUrl}${student.photo}`,
+      }
+    })
 
     const formattedCourses = {
       ...course,
       thumbnail: `${thumbnailUrl}${course.thumbnail}`,
-      total_students: course.students.length,
+      ...(req.user?.role === 'manager' ? { total_students: course.students.length, students } : {}),
     }
 
     return res.json({
