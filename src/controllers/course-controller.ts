@@ -411,6 +411,17 @@ export const addCourseStudent = async (req: Request & { user?: IRequestUser }, r
     const body = req.body
     const courseId = req.params.course_id
 
+    const isAlreadyEnrolled = await courseModel.findOne({
+      _id: courseId,
+      students: body.student_id,
+    })
+
+    if (isAlreadyEnrolled) {
+      return res.status(500).json({
+        message: 'Student already joined this course',
+      })
+    }
+
     await courseModel.findByIdAndUpdate(
       courseId,
       {
