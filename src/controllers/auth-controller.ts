@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import transactionModel from '../models/transaction-model'
 import userModel from '../models/user-model'
+import { imageUrl } from '../utils/function'
 
 export const signUpAction = async (req: Request, res: Response) => {
   const midtransUrl = process.env.MIDTRANS_URL
@@ -104,7 +105,6 @@ export const signInAction = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign(jwtPayload, process.env.JWT_SECRET_KEY as string, { expiresIn: '1d' })
-    const photoUrl = process.env.BACKEND_URL + '/uploads/students/'
 
     return res.json({
       message: 'Sign in success',
@@ -112,7 +112,7 @@ export const signInAction = async (req: Request, res: Response) => {
         name: existingUser.name,
         email: existingUser.email,
         role: existingUser.role,
-        photo: photoUrl + existingUser.photo,
+        photo: imageUrl('students/') + existingUser.photo,
         token: token,
       },
     })

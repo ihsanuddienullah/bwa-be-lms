@@ -5,6 +5,7 @@ import categoryModel from '../models/category-model'
 import courseContentModel from '../models/course-content-model'
 import courseModel from '../models/course-model'
 import userModel from '../models/user-model'
+import { imageUrl } from '../utils/function'
 import { IRequestUser } from '../utils/global-types'
 import { createCourseSchema } from '../utils/schema'
 
@@ -21,14 +22,12 @@ export const getCourses = async (req: Request & { user?: IRequestUser }, res: Re
       })
       .lean()
 
-    const thumbnailUrl = process.env.BACKEND_URL + '/uploads/courses/'
-
     const formattedCourses = courses.map((course) => {
       const category = (course.category as any).name
       return {
         ...course,
         category,
-        thumbnail: `${thumbnailUrl}${course.thumbnail}`,
+        thumbnail: `${imageUrl('courses')}${course.thumbnail}`,
         total_students: course.students.length,
       }
     })
@@ -69,19 +68,16 @@ export const getCourseById = async (req: Request & { user?: IRequestUser }, res:
       })
     }
 
-    const thumbnailUrl = process.env.BACKEND_URL + '/uploads/courses/'
-    const photoUrl = process.env.BACKEND_URL + '/uploads/students/'
-
     const students = (course.students as any[]).map((student) => {
       return {
         ...student,
-        photo: `${photoUrl}${student.photo}`,
+        photo: `${imageUrl('students')}${student.photo}`,
       }
     })
 
     const formattedCourses = {
       ...course,
-      thumbnail: `${thumbnailUrl}${course.thumbnail}`,
+      thumbnail: `${imageUrl('courses')}${course.thumbnail}`,
       ...(req.user?.role === 'manager' ? { total_students: course.students.length, students } : {}),
     }
 

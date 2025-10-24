@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import courseModel from '../models/course-model'
 import userModel from '../models/user-model'
+import { imageUrl } from '../utils/function'
 import { IRequestUser } from '../utils/global-types'
 import { createStudentSchema } from '../utils/schema'
 
@@ -11,12 +12,10 @@ export const getStudents = async (_: Request & { user?: IRequestUser }, res: Res
   try {
     const students = await userModel.find({ role: 'student' }).select('name photo courses').lean()
 
-    const thumbnailUrl = process.env.BACKEND_URL + '/uploads/students/'
-
     const formattedStudents = students.map((student) => {
       return {
         ...student,
-        photo: `${thumbnailUrl}${student.photo}`,
+        photo: `${imageUrl('students')}${student.photo}`,
       }
     })
 
@@ -45,11 +44,9 @@ export const getStudentById = async (req: Request & { user?: IRequestUser }, res
       })
     }
 
-    const thumbnailUrl = process.env.BACKEND_URL + '/uploads/students/'
-
     const formattedStudent = {
       ...student,
-      photo: `${thumbnailUrl}${student.photo}`,
+      photo: `${imageUrl('students')}${student.photo}`,
     }
 
     return res.json({
