@@ -9,20 +9,21 @@ import { imageUrl } from '../utils/function'
 import { IRequestUser } from '../utils/global-types'
 import { createCourseSchema } from '../utils/schema'
 
-export const getCourses = async (req: Request & { user?: IRequestUser }, res: Response) => {
+export const getCoursesByUserId = async (req: Request & { user?: IRequestUser }, res: Response) => {
   try {
-    const courses = await courseModel
-      .find({
-        manager: req.user?.id,
-      })
-      .select('title thumbnail students')
-      .populate({
-        path: 'category',
-        select: 'name -_id',
+    const courses = await userModel
+      .findById(req.user?.id)
+      .populate<{ courses: { title: string; thumbnail: string; students: string[]; category: string }[] }>({
+        path: 'courses',
+        select: 'title thumbnail students',
+        populate: {
+          path: 'category',
+          select: 'name -_id',
+        },
       })
       .lean()
 
-    const formattedCourses = courses.map((course) => {
+    const formattedCourses = courses?.courses.map((course) => {
       const category = (course.category as any).name
       return {
         ...course,

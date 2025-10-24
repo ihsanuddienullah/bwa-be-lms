@@ -10,7 +10,7 @@ import {
   getCategories,
   getCourseById,
   getCourseContentById,
-  getCourses,
+  getCoursesByUserId,
   getCourseStudents,
   updateCourse,
   updateCourseContent,
@@ -27,7 +27,7 @@ const upload = multer({
   fileFilter,
 })
 
-courseRoutes.get('/courses', verifyToken, getCourses)
+courseRoutes.get('/courses', verifyToken, getCoursesByUserId)
 courseRoutes.get('/courses/:course_id', verifyToken, getCourseById)
 courseRoutes.get('/categories', verifyToken, getCategories)
 courseRoutes.post('/courses', verifyToken, upload.single('thumbnail'), createCourse)
