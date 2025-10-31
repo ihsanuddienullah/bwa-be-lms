@@ -112,6 +112,60 @@ export const getCategories = async (_: Request, res: Response) => {
   }
 }
 
+export const createCategory = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const body = req.body
+
+    const isExist = await categoryModel.findOne({ name: body.name.toLowerCase() })
+
+    if (isExist) {
+      return res.status(500).json({
+        message: 'Category already exist',
+      })
+    }
+
+    const category = new categoryModel({
+      name: body.name.toLowerCase(),
+    })
+
+    await category.save()
+
+    return res.json({
+      message: 'Create category success',
+      data: category,
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({
+      message: 'Internal server error',
+    })
+  }
+}
+
+export const deleteCategory = async (req: Request & { user?: IRequestUser }, res: Response) => {
+  try {
+    const categoryId = req.params.category_id
+
+    const category = await categoryModel.findByIdAndDelete(categoryId)
+
+    if (!category) {
+      return res.status(404).json({
+        message: 'Category not found',
+      })
+    }
+
+    return res.json({
+      message: 'Delete category success',
+      data: category,
+    })
+  } catch (error) {
+    console.log(error)
+
+    return res.status(500).json({})
+  }
+}
+
 export const createCourse = async (req: Request & { user?: IRequestUser }, res: Response) => {
   try {
     const body = req.body

@@ -2,6 +2,7 @@ import express from 'express'
 import multer from 'multer'
 import {
   addCourseStudent,
+  createCategory,
   createCourse,
   createCourseContent,
   deleteCourse,
@@ -18,7 +19,7 @@ import {
 import { validateRequest } from '../middlewares/validate-request'
 import verifyToken from '../middlewares/verify-token'
 import { fileFilter, fileStorage } from '../utils/multer'
-import { addCourseStudentSchema, createCourseContentSchema } from '../utils/schema'
+import { addCourseStudentSchema, createCategorySchema, createCourseContentSchema } from '../utils/schema'
 
 const courseRoutes = express.Router()
 
@@ -29,10 +30,13 @@ const upload = multer({
 
 courseRoutes.get('/courses', verifyToken, getCoursesByUserId)
 courseRoutes.get('/courses/:course_id', verifyToken, getCourseById)
-courseRoutes.get('/categories', verifyToken, getCategories)
 courseRoutes.post('/courses', verifyToken, upload.single('thumbnail'), createCourse)
 courseRoutes.put('/courses/:course_id', verifyToken, upload.single('thumbnail'), updateCourse)
 courseRoutes.delete('/courses/:course_id', verifyToken, deleteCourse)
+
+courseRoutes.get('/categories', verifyToken, getCategories)
+courseRoutes.post('/categories', verifyToken, validateRequest(createCategorySchema), createCategory)
+courseRoutes.delete('/categories/:category_id', verifyToken, deleteCourse)
 
 courseRoutes.get('/courses/contents/:content_id', verifyToken, getCourseContentById)
 courseRoutes.post('/courses/contents', verifyToken, validateRequest(createCourseContentSchema), createCourseContent)

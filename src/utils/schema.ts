@@ -41,3 +41,7 @@ export const updateStudentSchema = createStudentSchema.partial({
 export const addCourseStudentSchema = z.object({
   student_id: z.string().min(1, 'Student ID is required'),
 })
+
+export const createCategorySchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+})
