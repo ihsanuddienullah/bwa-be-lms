@@ -5,6 +5,7 @@ import {
   createCategory,
   createCourse,
   createCourseContent,
+  deleteCategory,
   deleteCourse,
   deleteCourseContent,
   deleteCourseStudent,
@@ -36,7 +37,7 @@ courseRoutes.delete('/courses/:course_id', verifyToken, deleteCourse)
 
 courseRoutes.get('/categories', verifyToken, getCategories)
 courseRoutes.post('/categories', verifyToken, validateRequest(createCategorySchema), createCategory)
-courseRoutes.delete('/categories/:category_id', verifyToken, deleteCourse)
+courseRoutes.delete('/categories/:category_id', verifyToken, deleteCategory)
 
 courseRoutes.get('/courses/contents/:content_id', verifyToken, getCourseContentById)
 courseRoutes.post('/courses/contents', verifyToken, validateRequest(createCourseContentSchema), createCourseContent)

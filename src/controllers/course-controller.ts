@@ -157,7 +157,6 @@ export const deleteCategory = async (req: Request & { user?: IRequestUser }, res
 
     return res.json({
       message: 'Delete category success',
-      data: category,
     })
   } catch (error) {
     console.log(error)
