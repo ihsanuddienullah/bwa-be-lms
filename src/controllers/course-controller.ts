@@ -263,6 +263,24 @@ export const updateCourse = async (req: Request & { user?: IRequestUser }, res: 
       })
     }
 
+    if (oldCourse.category.toString() !== category._id.toString()) {
+      await categoryModel.findByIdAndUpdate(
+        oldCourse.category,
+        {
+          $pull: { courses: oldCourse._id },
+        },
+        { new: true }
+      )
+
+      await categoryModel.findByIdAndUpdate(
+        category._id,
+        {
+          $push: { courses: oldCourse._id },
+        },
+        { new: true }
+      )
+    }
+
     await courseModel.findByIdAndUpdate(courseId, {
       title: parse.data.title,
       thumbnail: req.file?.filename || oldCourse.thumbnail,
